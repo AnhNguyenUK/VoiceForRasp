@@ -138,14 +138,15 @@ Window {
                             width: 30
                             height: 30
                         }
-                        Button{
-                            id: fan
+                        Slider {
+                            property double backend: 0
                             width: 100
                             height: 40
-                            title: "ON"
-                            buttonColor: "#009CC7"
-                            stage1: "ON"
-                            stage2: "OFF"
+                            maximum:  10
+                            value:    backend
+                            minimum: -10
+   
+                            onClicked: console.log("Fan value: ", value)
                         }
                     }
                 }

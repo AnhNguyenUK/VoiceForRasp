@@ -5,22 +5,22 @@ import Queue
 from cgi import parse_qs
 from wsgiref.simple_server import make_server
 
+
+nameOfServer = ["mysmartfanserver",
+                "mysmartlightserver",
+                "mysmartsocketserver",
+                "mysmart"] 
+
 status = {
-    'FAN':0,
-    'LIGHT':0,
-    'DIFFUSER':0,
-    'SOCKET':0,
+    'FAN':1,
+    'LIGHT':1,
+    'DIFFUSER':1,
+    'SOCKET':1,
 }
 
-gpio_socket = mraa.Gpio(43)
-gpio_light = mraa.Gpio(1)
-gpio_diffuser = mraa.Gpio(2)
-gpio_fan = mraa.Gpio(3)
+gpio_output = mraa.Gpio(4)
 
-gpio_socket.dir(mraa.DIR_OUT)
-gpio_light.dir(mraa.DIR_OUT)
-gpio_diffuser.dir(mraa.DIR_OUT)
-gpio_fan.dir(mraa.DIR_OUT)
+gpio_output.dir(mraa.DIR_OUT)
 
 q = Queue.Queue()
 
@@ -41,37 +41,17 @@ def doAction(queue):
         
         return retVal
 
-    print('In blink')
-    gpio_def = ['SOCKET', 'LIGHT', 'DIFFUSER', 'FAN']
+    print('Listening')
     while(1):
         print('Inside queue: ', queue.get())
         data = queue.get()['data']
         print(data)
         if (data):
-            if data[0] == 'FAN':
-                print('Fan: {}'.format(data[1]))
-                if data[1] == 'on':        
-                    gpio_fan.write(1)
-                elif data[1] == 'off':
-                    gpio_fan.write(0)
-            if data[0] == 'LIGHT':
-                print('Light: {}'.format(data[1]))
-                if data[1] == 'on':
-                    gpio_light.write(1)
-                elif data[1] == 'off':
-                    gpio_light.write(0)
-            if data[0] == 'DIFFUSER':
-                print('Diffuser: {}'.format(data[1]))
-                if data[1] == 'on':
-                    gpio_diffuser.write(1)
-                elif data[1] == 'off':
-                    gpio_diffuser.write(0)
-            if data[0] == 'SOCKET':
-                print('Socket: {}'.format(data[1]))
-                if data[1] == 'on':
-                    gpio_socket.write(1)
-                elif data[1] == 'off':
-                    gpio_socket.write(0)
+            print('Output: {}'.format(data[1]))
+            if data[1] == 'on':        
+                gpio_output.write(1)
+            elif data[1] == 'off':
+                gpio_output.write(0)
         
         queue.task_done()
         

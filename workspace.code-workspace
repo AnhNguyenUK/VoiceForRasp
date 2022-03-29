@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "linkit_driver"
+		},
+		{
+			"name": "linkitduodriver",
+			"path": "linkit_driver\\linkitduodriver"
+		}
+	],
+	"settings": {}
+}

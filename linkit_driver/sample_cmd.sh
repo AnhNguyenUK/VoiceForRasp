@@ -1,0 +1,1 @@
+curl -d data=SOCKET -d data=off root@mylinkit.local:1337

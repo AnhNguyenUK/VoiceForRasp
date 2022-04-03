@@ -1,0 +1,1 @@
+curl -d data=SOCKET -d data=%1 root@mysmartlightserver.local:1337

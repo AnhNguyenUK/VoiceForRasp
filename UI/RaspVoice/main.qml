@@ -31,17 +31,17 @@ Window {
                     font.bold: true
                 }
 
-                Button{
-                    id: recordButton
-                    width: 100
-                    height: 40
-                    Layout.alignment: Qt.AlignRight
-                    Layout.rightMargin: 20
-                    title: "Record"
-                    buttonColor: "#009CC7"
-                    stage1: "Record"
-                    stage2: "Stop"
-                }
+                // Button{
+                //     id: recordButton
+                //     width: 100
+                //     height: 40
+                //     Layout.alignment: Qt.AlignRight
+                //     Layout.rightMargin: 20
+                //     title: "Record"
+                //     buttonColor: "#009CC7"
+                //     stage1: "Record"
+                //     stage2: "Stop"
+                // }
             }
         }
 
@@ -72,11 +72,11 @@ Window {
                             width: 30
                             height: 30
                         }
-                        Button{
+                        DeviceButton{
                             id: light
                             width: 100
                             height: 40
-                            title: "ON"
+                            deviceName: "LIGHT"
                             buttonColor: "#009CC7"
                             stage1: "ON"
                             stage2: "OFF"
@@ -94,11 +94,11 @@ Window {
                             width: 30
                             height: 30
                         }
-                        Button{
+                        DeviceButton{
                             id: diffuser
                             width: 100
                             height: 40
-                            title: "ON"
+                            deviceName: "DIFFUSER"
                             buttonColor: "#009CC7"
                             stage1: "ON"
                             stage2: "OFF"
@@ -116,11 +116,11 @@ Window {
                             width: 30
                             height: 30
                         }
-                        Button{
+                        DeviceButton{
                             id: socket
                             width: 100
                             height: 40
-                            title: "ON"
+                            deviceName: "SOCKET"
                             buttonColor: "#009CC7"
                             stage1: "ON"
                             stage2: "OFF"
@@ -145,8 +145,6 @@ Window {
                             maximum:  10
                             value:    backend
                             minimum: -10
-   
-                            onClicked: console.log("Fan value: ", value)
                         }
                     }
                 }

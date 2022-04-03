@@ -1,0 +1,5 @@
+chmod 755 /IoT/examples/init_server.py
+
+/usr/bin/python /IoT/examples/init_server.py
+
+exit 0

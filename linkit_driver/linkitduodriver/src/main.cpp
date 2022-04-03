@@ -7,7 +7,7 @@ void setup() {
   pinMode(4, OUTPUT);
 }
 void loop() {
-  int c = Serial.read(); // read from MT7688AN
+  int c = Serial1.read(); // read from MT7688AN
   if (c != -1) {
     switch(c) {
       case '0': // turn off D13 when receiving "0"

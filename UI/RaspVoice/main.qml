@@ -138,13 +138,13 @@ Window {
                             width: 30
                             height: 30
                         }
-                        Slider {
+                        FanSlider {
                             property double backend: 0
                             width: 100
                             height: 40
                             maximum:  10
                             value:    backend
-                            minimum: -10
+                            minimum: 0
                         }
                     }
                 }

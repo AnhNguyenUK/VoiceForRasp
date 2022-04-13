@@ -26,56 +26,43 @@ gpio_output.dir(mraa.DIR_OUT)
 q = Queue.Queue()
 response = Queue.Queue()
 
-BASE_DELAY = 0.1
-fan_speed = {'off':0, 'low':0.33, 'medium':0.66, 'high':1}
-gpio_fan_speed = mraa.Gpio(19)
-
 def doAction(queue, chip_id):
     
-    currState = "off"
-    
-    def isFanChangeState(dataQueue):
-        data = dataQueue.get()['data']
-        errorCode = True
-        if (data):
-            if data[0] == 'FAN':
-                currState == data[1]
-                errorCode = False
+    def statusConvert(status, is_fan):
+        retVal = 0
+        if status == 'off':
+            retVal = 0
+        if (status == 'slow') & (is_fan == True):
+            retVal = 1
+        if (status == 'normal') & (is_fan == True):
+            retVal = 2
+        if (status == 'high') & (is_fan == True):
+            retVal = 3
+        if (status == 'on') & (is_fan == False):
+            retVal = 4
         
-        return errorCode
-    
+        return retVal
+
     print('Listening')
     while(1):
         data = queue.get()['data']
         print('Inside queue: ', data)
         if (data):
-            if data[0] == 'FAN':
-                fan_options = currState
-                if  fan_options == "off":
-                    while(isFanChangeState()):
-                        gpio_fan_speed.write(0)
+            print('Output: {}'.format(data[1]))
+            if data[1] == 'on':
+                if chip_id == "linkit 7688 duo":        
+                    serial_port.write("1")
                 else:
-                    while(isFanChangeState()):
-                        gpio_fan_speed.write(1)
-                        time.sleep(0.01/fan_speed[fan_options])
-                        gpio_fan_speed.write(0)
-                        time.sleep(0.01/fan_speed[fan_options])
+                    gpio_output.write(1)
+                response.put({"Status":"Done"})
+            elif data[1] == 'off':
+                if chip_id == "linkit 7688 duo":        
+                    serial_port.write("0")
+                else:
+                    gpio_output.write(0)
+                response.put({"Status":"Done"})
             else:
-                print('Output: {}'.format(data[1]))
-                if data[1] == 'on':
-                    if chip_id == "linkit 7688 duo":        
-                        serial_port.write("1")
-                    else:
-                        gpio_output.write(1)
-                    response.put({"Status":"Done"})
-                elif data[1] == 'off':
-                    if chip_id == "linkit 7688 duo":        
-                        serial_port.write("0")
-                    else:
-                        gpio_output.write(0)
-                    response.put({"Status":"Done"})
-                else:
-                    response.put({"Status":"NotOK"})
+                response.put({"Status":"NotOK"})
         
         queue.task_done()
         

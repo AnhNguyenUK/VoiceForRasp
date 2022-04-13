@@ -1,51 +1,33 @@
 import mraa
 import time
-import serial
 import threading
 import Queue
 from cgi import parse_qs
 from wsgiref.simple_server import make_server
 
-
-# # nameOfServer = ["mysmartfanserver_v",
-# #                 "mysmartlightserver_v",
-# #                 "mysmartsocketserver_v",
-# #                 "mysmartdiffserver_v"] 
-
-# status = {
-#     'FAN':1,
-#     'LIGHT':1,
-#     'DIFFUSER':1,
-#     'SOCKET':1,
-# }
-
-gpio_output = mraa.Gpio(4)
-
-gpio_output.dir(mraa.DIR_OUT)
+gpio_output = mraa.Gpio(19)
 
 q = Queue.Queue()
 response = Queue.Queue()
 
-def doAction(queue, chip_id):
+fan_speed_mode = {"off":0.01, "low":0.33, "normal":0.67, "high":0.99}
 
+def doAction(queue):
+    
     print('Listening')
     while(1):
         data = queue.get()['data']
         print('Inside queue: ', data)
         if (data):
-            print('Output: {}'.format(data[1]))
-            if data[1] == 'on':
-                if chip_id == "linkit 7688 duo":        
-                    serial_port.write("1")
-                else:
-                    gpio_output.write(1)
-            elif data[1] == 'off':
-                if chip_id == "linkit 7688 duo":        
-                    serial_port.write("0")
-                else:
-                    gpio_output.write(0)
-            
+            currState = data[1]
+            print('Output: {}'.format(currState))
             response.put({"Status":"Done"})
+        
+        gpio_output.write(1)
+        time.sleep(1-fan_speed_mode[currState])
+        gpio_output.write(0)
+        time.sleep(1-fan_speed_mode[currState])
+        
         queue.task_done()
         
 def gateway_handler(environ, start_response):
@@ -72,24 +54,12 @@ def gateway_handler(environ, start_response):
 
 
 if __name__ == '__main__':
-    file = open("/IoT/examples/chip_info.txt")
-    chip_id = file.readline()
-    print(chip_id)
-    if (chip_id == "linkit 7688 duo"):
-        global serial_port
-        serial_port = serial.Serial("/dev/ttyS0",57600)
+    
+    global currState
+    currState = 0
     httpd = make_server('', 1337, gateway_handler)
     # httpd.server_close()
     t1 = threading.Thread(target=httpd.serve_forever)
-    t2 = threading.Thread(target=doAction, args=(q,chip_id))
+    t2 = threading.Thread(target=doAction, args=(q))
     t1.start()
     t2.start()
-    # t1 = threading.Thread(target=blinking, args=(gpio_socket,))
-    # t2 = threading.Thread(target=blinking, args=(gpio_light,))
-    # t3 = threading.Thread(target=blinking, args=(gpio_diffuser,))
-    # t4 = threading.Thread(target=blinking, args=(gpio_fan,))
-    # t1.start()
-    # t2.start()
-    # t3.start()
-    # t4.start()
-        
